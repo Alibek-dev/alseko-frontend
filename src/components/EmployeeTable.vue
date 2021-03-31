@@ -8,10 +8,11 @@
                 single-line
                 hide-details
             ></v-text-field>
+            <v-btn class="ml-10">Добавить</v-btn>
         </v-card-title>
         <v-data-table
             :headers="headers"
-            :items="desserts"
+            :items="employees"
             :search="search"
         ></v-data-table>
     </v-card>
@@ -20,12 +21,15 @@
 <script>
 export default {
     name: "Table",
+    props: {
+        employees: []
+    },
     data: () => ({
         search: '',
         headers: [
-            {text: 'ФИО', align: 'start', value: 'fullname'},
-            {text: 'Кол-во', align: 'start', value: 'count'},
-            {text: 'Общая стоимость', align: 'start', value: 'sum'},
+            {text: 'ФИО', align: 'start', value: 'fullName'},
+            {text: 'Кол-во', align: 'start', value: 'countOfSubjects'},
+            {text: 'Общая стоимость', align: 'start', value: 'sumOfTangiblesValue'},
 
         ]
     })

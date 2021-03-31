@@ -5,7 +5,24 @@ import Employees from './modules/Employees'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: {
-    Employees
-  }
+    state: {
+        error: null
+    },
+
+    mutations: {
+        setError(state, error) {
+            state.error = error
+        },
+        clearError(state) {
+            state.error = null
+        }
+    },
+
+    getters: {
+        error: s => s.error
+    },
+
+    modules: {
+        Employees
+    }
 })

@@ -5,6 +5,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.min.css'
 
 
 Vue.config.productionTip = false
