@@ -28,44 +28,24 @@
             </v-list>
         </v-menu>
 
-        <v-dialog
-            v-model="dialog"
-            persistent
-            max-width="400"
-        >
-            <v-card>
-                <v-card-title class="headline">
-                    Вы действительно хотите удалить?
-                </v-card-title>
-                <v-card-text>Сотрудника <strong>{{ itemContextMenu.fullName }}</strong></v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="dialog = false"
-                    >
-                        Disagree
-                    </v-btn>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="dialog = false"
-                    >
-                        Agree
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <Dialog
+            :item-context-menu="itemContextMenu"
+            :dialog="dialog"
+            @answer="onAnswer"
+        />
 
     </v-card>
 </template>
 
 <script>
+import Dialog from './Dialog'
 export default {
     name: "Table",
     props: {
         employees: Array,
+    },
+    components: {
+        Dialog,
     },
     data: () => ({
         selectedId: -1,
@@ -88,7 +68,7 @@ export default {
         ]
     }),
     methods: {
-        rowClick: function (item, row) {
+        rowClick (item, row) {
             if (this.selectedId === item.fullName) {
                 this.selectedId = -1
                 row.select(false)
@@ -97,7 +77,7 @@ export default {
                 row.select(true);
             }
         },
-        rowContextMenu: function (e, item) {
+        rowContextMenu (e, item) {
             document.oncontextmenu = function (){return false}
             this.itemContextMenu = item.item
 
@@ -107,7 +87,13 @@ export default {
             this.$nextTick(() => {
                 this.showMenu = true;
             });
-        }
+        },
+        onAnswer(data) {
+            this.dialog = data.dialog
+            if (data.deleteObject) {
+                console.log('Удалить')
+            }
+        },
     },
 }
 </script>
