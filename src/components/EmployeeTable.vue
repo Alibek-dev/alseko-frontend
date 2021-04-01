@@ -8,7 +8,7 @@
                 single-line
                 hide-details
             ></v-text-field>
-            <v-btn class="ml-10">Добавить</v-btn>
+            <v-btn @click="showForm = !showForm" class="ml-10">Добавить</v-btn>
         </v-card-title>
         <v-data-table
             @click:row="rowClick"
@@ -32,14 +32,21 @@
             question='Вы дейстительно хотите удалить данного сотрудника?'
             :text="itemContextMenu.fullName"
             :dialog="dialog"
-            @answer="onAnswer"
+            @answer="onAnswerDialog"
         />
+
+        <EmployeeForm
+            :show-form="showForm"
+            @answerForm="onAnswerForm"
+        />
+
 
     </v-card>
 </template>
 
 <script>
 import Dialog from './Dialog'
+import EmployeeForm from "./EmployeeForm";
 export default {
     name: "Table",
     props: {
@@ -47,6 +54,7 @@ export default {
     },
     components: {
         Dialog,
+        EmployeeForm,
     },
     data: () => ({
         selectedId: -1,
@@ -59,6 +67,8 @@ export default {
 
         itemContextMenu: {},
         dialog: false,
+
+        showForm: false,
 
         search: '',
         headers: [
@@ -89,12 +99,16 @@ export default {
                 this.showMenu = true;
             });
         },
-        onAnswer(data) {
+        onAnswerDialog(data) {
             this.dialog = data.dialog
             if (data.deleteObject) {
                 console.log('Удалить')
             }
         },
+        onAnswerForm(data) {
+            this.showForm = data.showForm
+            console.log('Сохранить')
+         }
     },
 }
 </script>
