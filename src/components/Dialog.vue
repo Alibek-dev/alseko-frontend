@@ -6,9 +6,9 @@
     >
         <v-card>
             <v-card-title class="headline">
-                Вы действительно хотите удалить?
+                {{ question }}
             </v-card-title>
-            <v-card-text style="white-space: nowrap">Сотрудника <strong>{{ itemContextMenu.fullName }}</strong></v-card-text>
+            <v-card-text> <strong>{{ text }}</strong> </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -34,7 +34,8 @@
 export default {
     name: "Dialog",
     props: {
-        itemContextMenu: Object,
+        question: String,
+        text: String,
         dialog: Boolean
     },
 

@@ -29,7 +29,8 @@
         </v-menu>
 
         <Dialog
-            :item-context-menu="itemContextMenu"
+            question='Вы дейстительно хотите удалить данного сотрудника?'
+            :text="itemContextMenu.fullName"
             :dialog="dialog"
             @answer="onAnswer"
         />
