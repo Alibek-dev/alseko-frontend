@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Employees from './modules/Employees'
+import EmployeeTangibles from "@/store/modules/EmployeeTangibles";
 
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     },
 
     modules: {
-        Employees
+        Employees,
+        EmployeeTangibles
     }
 })

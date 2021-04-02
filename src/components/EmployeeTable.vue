@@ -13,11 +13,13 @@
         <v-data-table
             @click:row="rowClick"
             @contextmenu:row="rowContextMenu"
-            item-key="fullName"
+            @dblclick:row="rowDbClick"
+            item-key="id"
             single-select
             :headers="headers"
             :items="employees"
             :search="search"
+            :loading="loading"
         >
 
         </v-data-table>
@@ -35,10 +37,16 @@
             @answer="onAnswerDialog"
         />
 
-        <EmployeeForm
-            :show-form="showForm"
-            @answerForm="onAnswerForm"
-        />
+        <v-dialog
+            v-model="showForm"
+            persistent
+            max-width="800"
+        >
+            <EmployeeForm
+                @answerForm="onAnswerForm"
+                :newEmployee="true"
+            />
+        </v-dialog>
 
 
     </v-card>
@@ -51,6 +59,8 @@ export default {
     name: "Table",
     props: {
         employees: Array,
+        loading: Boolean,
+        headers: Array,
     },
     components: {
         Dialog,
@@ -70,21 +80,16 @@ export default {
 
         showForm: false,
 
-        search: '',
-        headers: [
-            {text: 'ФИО', align: 'start', value: 'fullName'},
-            {text: 'Кол-во', align: 'start', value: 'countOfSubjects'},
-            {text: 'Общая стоимость', align: 'start', value: 'sumOfTangiblesValue'},
+        search: ''
 
-        ]
     }),
     methods: {
         rowClick (item, row) {
-            if (this.selectedId === item.fullName) {
+            if (this.selectedId === item.id) {
                 this.selectedId = -1
                 row.select(false)
             } else {
-                this.selectedId=item.fullName
+                this.selectedId=item.id
                 row.select(true);
             }
         },
@@ -99,6 +104,9 @@ export default {
                 this.showMenu = true;
             });
         },
+        rowDbClick(e, item) {
+            this.$router.push(`/${item.item.id}`)
+        },
         onAnswerDialog(data) {
             this.dialog = data.dialog
             if (data.deleteObject) {
@@ -107,7 +115,10 @@ export default {
         },
         onAnswerForm(data) {
             this.showForm = data.showForm
-            console.log('Сохранить')
+            if (data.save) {
+                console.log('Сохранить')
+            }
+
          }
     },
 }
