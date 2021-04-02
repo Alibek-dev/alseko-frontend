@@ -8,14 +8,24 @@
                 <v-text-field
                     label="Фамилия"
                     placeholder="Введите Фамилию" outlined
-                    v-model="editedEmployee.firstName"
+                    v-model.trim="firstName"
+                    counter="50"
+                    :error="$v.firstName.$invalid && $v.firstName.$error"
+                    @input="$v.firstName.$touch()"
                 ></v-text-field>
             </v-col>
+
+            <pre> {{$v.firstName}} </pre>
+
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
                 <v-text-field
                     label="Имя"
                     placeholder="Введите Имя"
-                    outlined v-model="editedEmployee.secondName"
+                    outlined
+                    v-model.trim="secondName"
+                    counter="50"
+                    :error="$v.secondName.$invalid && $v.secondName.$error"
+                    @input="$v.secondName.$touch()"
                 ></v-text-field>
             </v-col>
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
@@ -23,7 +33,10 @@
                     label="Отчество"
                     placeholder="Введите Отчество"
                     outlined
-                    v-model="editedEmployee.patronymic"
+                    v-model.trim="patronymic"
+                    counter="50"
+                    :error="$v.patronymic.$invalid && $v.patronymic.$error"
+                    @input="$v.patronymic.$touch()"
                 ></v-text-field>
             </v-col>
 
@@ -163,6 +176,8 @@
 </template>
 
 <script>
+import {required, maxLength} from 'vuelidate/lib/validators'
+
 export default {
     name: "EmployeeForm",
     props: {
@@ -181,14 +196,14 @@ export default {
             {text: 'Стоимость', value: 'price'},
             {text: 'Действия', value: 'actions', sortable: false}
         ],
-        newEmployee: {
-            firstName: '',
-            secondName: '',
-            patronymic: '',
-        },
         employee: {},
         editedIndex: -1,
-        editedEmployee: {},
+
+        firstName: '',
+        secondName: '',
+        patronymic: '',
+        subjects: [],
+
         editedItem: {
             subject: '',
             price: '',
@@ -198,6 +213,12 @@ export default {
             price: '',
         },
     }),
+
+    validations: {
+        firstName: {maxLength: maxLength(50), required},
+        secondName: {maxLength: maxLength(50), required},
+        patronymic: {maxLength: maxLength(50), required},
+    },
 
     computed: {
         formTitle() {
@@ -223,28 +244,40 @@ export default {
             await this.$store.dispatch('fetchEmployee', id)
             this.employee = await this.$store.getters.employee
             console.log(this.employee)
-            this.editedEmployee = {
-                firstName: this.employee.firstName,
-                secondName: this.employee.secondName,
-                patronymic: this.employee.patronymic
-            }
+            console.log(this.$v)
+
+            this.firstName = this.employee.firstName
+            this.secondName = this.employee.secondName
+            this.patronymic = this.employee.patronymic
+
         }
     },
 
     methods: {
         cancelTheForm() {
             if (this.isNewEmployee) {
+                this.firstName = ''
+                this.secondName = ''
+                this.patronymic = ''
+                this.$v.$reset()
                 this.$emit('answerForm', {save: false, showForm: false})
             } else {
                 this.$router.push('/')
             }
         },
         saveAndCloseForm() {
-            if (this.isNewEmployee) {
-                this.$emit('answerForm', {save: true, showForm: false})
+            this.$v.$touch()
+            if (this.$v.$invalid) {
+                console.log('Не пройдёшь')
             } else {
-                this.$router.push('/')
+                if (this.isNewEmployee) {
+
+                    this.$emit('answerForm', {save: true, showForm: false})
+                } else {
+                    this.$router.push('/')
+                }
             }
+
         },
 
 
