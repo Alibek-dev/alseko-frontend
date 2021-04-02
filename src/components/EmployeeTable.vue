@@ -44,7 +44,7 @@
         >
             <EmployeeForm
                 @answerForm="onAnswerForm"
-                :newEmployee="true"
+                :isNewEmployee="true"
             />
         </v-dialog>
 

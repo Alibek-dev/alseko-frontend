@@ -6,11 +6,13 @@ import router from './router'
 import store from './store'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.min.css'
+import Vuelidate from "vuelidate/src";
 
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
+Vue.use(Vuelidate)
 
 new Vue({
   vuetify: new Vuetify(),

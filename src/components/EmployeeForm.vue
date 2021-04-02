@@ -4,24 +4,34 @@
         <v-card-title>Добавить сотрудника</v-card-title>
 
         <v-card-text>
-
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field label="Фамилия" placeholder="Введите Фамилию" outlined></v-text-field>
+                <v-text-field
+                    label="Фамилия"
+                    placeholder="Введите Фамилию" outlined
+                    v-model="editedEmployee.firstName"
+                ></v-text-field>
             </v-col>
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field label="Имя" placeholder="Введите Имя" outlined></v-text-field>
+                <v-text-field
+                    label="Имя"
+                    placeholder="Введите Имя"
+                    outlined v-model="editedEmployee.secondName"
+                ></v-text-field>
             </v-col>
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field label="Отчество" placeholder="Введите Отчество" outlined></v-text-field>
+                <v-text-field
+                    label="Отчество"
+                    placeholder="Введите Отчество"
+                    outlined
+                    v-model="editedEmployee.patronymic"
+                ></v-text-field>
             </v-col>
-
 
             <v-card>
                 <v-card-title></v-card-title>
                 <v-data-table
                     :headers="headers"
                     :items="employee.subjects"
-                    sort-by="calories"
                     class="elevation-1"
                 >
                     <template v-slot:top>
@@ -57,58 +67,22 @@
 
                                     <v-card-text>
                                         <v-container>
-                                            <v-row>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                        v-model="editedItem.name"
-                                                        label="Dessert name"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                        v-model="editedItem.calories"
-                                                        label="Calories"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                        v-model="editedItem.fat"
-                                                        label="Fat (g)"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                        v-model="editedItem.carbs"
-                                                        label="Carbs (g)"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                        v-model="editedItem.protein"
-                                                        label="Protein (g)"
-                                                    ></v-text-field>
-                                                </v-col>
-                                            </v-row>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    label="Название"
+                                                    placeholder="Введите название материальной ценности"
+                                                    outlined
+                                                    v-model="editedItem.subject"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    label="Стоимость"
+                                                    placeholder="Введите стоимость"
+                                                    outlined
+                                                    v-model="editedItem.price"
+                                                ></v-text-field>
+                                            </v-col>
                                         </v-container>
                                     </v-card-text>
 
@@ -166,23 +140,6 @@
                     </template>
                 </v-data-table>
             </v-card>
-
-            <!--            <v-card>
-                            <v-card-title>Добавить/редактировать материальную ценность</v-card-title>
-                            <v-row>
-                                <v-col lg="8" md="8" sm="12" xs="12">
-                                    <v-text-field label="Название" placeholder="Название материальной ценности"
-                                                  outlined></v-text-field>
-                                </v-col>
-                                <v-col lg="4" md="4" sm="12" xs="12">
-                                    <v-text-field label="Стоимость" placeholder="Стоимость материальной ценности"
-                                                  outlined></v-text-field>
-                                </v-col>
-                            </v-row>
-
-                        </v-card>-->
-
-
         </v-card-text>
 
         <v-card-actions>
@@ -190,14 +147,14 @@
             <v-btn
                 color="red darken-1"
                 text
-                @click="$emit('answerForm', {save: false, showForm: false})"
+                @click="cancelTheForm"
             >
                 Отмена
             </v-btn>
             <v-btn
                 color="green darken-1"
                 text
-                @click="$emit('answerForm', {save: true, showForm: false})"
+                @click="saveAndCloseForm"
             >
                 Сохранить
             </v-btn>
@@ -209,10 +166,8 @@
 export default {
     name: "EmployeeForm",
     props: {
-        newEmployee: {
-            type: Boolean,
-            default: true
-        },
+        isNewEmployee: Boolean,
+
     },
     data: () => ({
         dialog: false,
@@ -226,17 +181,21 @@ export default {
             {text: 'Стоимость', value: 'price'},
             {text: 'Действия', value: 'actions', sortable: false}
         ],
-        employee: {
-            subjects: Array,
+        newEmployee: {
+            firstName: '',
+            secondName: '',
+            patronymic: '',
         },
+        employee: {},
         editedIndex: -1,
+        editedEmployee: {},
         editedItem: {
             subject: '',
-            price: 0,
+            price: '',
         },
         defaultItem: {
             subject: '',
-            price: 0,
+            price: '',
         },
     }),
 
@@ -256,7 +215,7 @@ export default {
     },
 
     async mounted() {
-        if (this.newEmployee) {
+        if (this.isNewEmployee) {
             this.employee = {}
         } else {
             let path = location.pathname.split('/')
@@ -264,10 +223,31 @@ export default {
             await this.$store.dispatch('fetchEmployee', id)
             this.employee = await this.$store.getters.employee
             console.log(this.employee)
+            this.editedEmployee = {
+                firstName: this.employee.firstName,
+                secondName: this.employee.secondName,
+                patronymic: this.employee.patronymic
+            }
         }
     },
 
     methods: {
+        cancelTheForm() {
+            if (this.isNewEmployee) {
+                this.$emit('answerForm', {save: false, showForm: false})
+            } else {
+                this.$router.push('/')
+            }
+        },
+        saveAndCloseForm() {
+            if (this.isNewEmployee) {
+                this.$emit('answerForm', {save: true, showForm: false})
+            } else {
+                this.$router.push('/')
+            }
+        },
+
+
         editItem(item) {
             this.editedIndex = this.employee.subjects.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -275,13 +255,13 @@ export default {
         },
 
         deleteItem(item) {
-            this.editedIndex = this.subjects.indexOf(item)
+            this.editedIndex = this.employee.subjects.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
 
         deleteItemConfirm() {
-            this.subjects.splice(this.editedIndex, 1)
+            this.employee.subjects.splice(this.editedIndex, 1)
             this.closeDelete()
         },
 
@@ -303,9 +283,9 @@ export default {
 
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.subjects[this.editedIndex], this.editedItem)
+                Object.assign(this.employee.subjects[this.editedIndex], this.editedItem)
             } else {
-                this.subjects.push(this.editedItem)
+                this.employee.subjects.push(this.editedItem)
             }
             this.close()
         },
