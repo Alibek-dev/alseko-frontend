@@ -14,9 +14,6 @@
                     @input="$v.firstName.$touch()"
                 ></v-text-field>
             </v-col>
-
-            <pre> {{$v.firstName}} </pre>
-
             <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
                 <v-text-field
                     label="Имя"
@@ -44,7 +41,7 @@
                 <v-card-title></v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="employee.subjects"
+                    :items="subjects"
                     class="elevation-1"
                 >
                     <template v-slot:top>
@@ -73,50 +70,13 @@
                                         Добавить
                                     </v-btn>
                                 </template>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">{{ formTitle }}</span>
-                                    </v-card-title>
 
-                                    <v-card-text>
-                                        <v-container>
-                                            <v-col cols="12">
-                                                <v-text-field
-                                                    label="Название"
-                                                    placeholder="Введите название материальной ценности"
-                                                    outlined
-                                                    v-model="editedItem.subject"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-text-field
-                                                    label="Стоимость"
-                                                    placeholder="Введите стоимость"
-                                                    outlined
-                                                    v-model="editedItem.price"
-                                                ></v-text-field>
-                                            </v-col>
-                                        </v-container>
-                                    </v-card-text>
-
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                            color="blue darken-1"
-                                            text
-                                            @click="close"
-                                        >
-                                            Отмена
-                                        </v-btn>
-                                        <v-btn
-                                            color="blue darken-1"
-                                            text
-                                            @click="save"
-                                        >
-                                            Сохранить
-                                        </v-btn>
-                                    </v-card-actions>
-                                </v-card>
+                                <TangibleForm
+                                    :edited-item="editedItem"
+                                    :show-tangible-form="dialog"
+                                    @close="close"
+                                    @save="save"
+                                />
                             </v-dialog>
                             <v-dialog v-model="dialogDelete" max-width="500px">
                                 <v-card>
@@ -177,12 +137,16 @@
 
 <script>
 import {required, maxLength} from 'vuelidate/lib/validators'
+import TangibleForm from "@/components/TangibleForm";
 
 export default {
     name: "EmployeeForm",
     props: {
         isNewEmployee: Boolean,
 
+    },
+    components: {
+        TangibleForm
     },
     data: () => ({
         dialog: false,
@@ -243,13 +207,12 @@ export default {
             const id = path[path.length - 1]
             await this.$store.dispatch('fetchEmployee', id)
             this.employee = await this.$store.getters.employee
-            console.log(this.employee)
-            console.log(this.$v)
+
 
             this.firstName = this.employee.firstName
             this.secondName = this.employee.secondName
             this.patronymic = this.employee.patronymic
-
+            this.subjects = this.employee.subjects
         }
     },
 
@@ -282,19 +245,19 @@ export default {
 
 
         editItem(item) {
-            this.editedIndex = this.employee.subjects.indexOf(item)
+            this.editedIndex = this.subjects.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
 
         deleteItem(item) {
-            this.editedIndex = this.employee.subjects.indexOf(item)
+            this.editedIndex = this.subjects.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
 
         deleteItemConfirm() {
-            this.employee.subjects.splice(this.editedIndex, 1)
+            this.subjects.splice(this.editedIndex, 1)
             this.closeDelete()
         },
 
@@ -314,11 +277,11 @@ export default {
             })
         },
 
-        save() {
+        save(item) {
             if (this.editedIndex > -1) {
-                Object.assign(this.employee.subjects[this.editedIndex], this.editedItem)
+                Object.assign(this.subjects[this.editedIndex], item)
             } else {
-                this.employee.subjects.push(this.editedItem)
+                this.subjects.push(item)
             }
             this.close()
         },
