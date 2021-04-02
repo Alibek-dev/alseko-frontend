@@ -4,38 +4,40 @@
         <v-card-title>Добавить сотрудника</v-card-title>
 
         <v-card-text>
-            <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field
-                    label="Фамилия"
-                    placeholder="Введите Фамилию" outlined
-                    v-model.trim="firstName"
-                    counter="50"
-                    :error="$v.firstName.$invalid && $v.firstName.$error"
-                    @input="$v.firstName.$touch()"
-                ></v-text-field>
-            </v-col>
-            <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field
-                    label="Имя"
-                    placeholder="Введите Имя"
-                    outlined
-                    v-model.trim="secondName"
-                    counter="50"
-                    :error="$v.secondName.$invalid && $v.secondName.$error"
-                    @input="$v.secondName.$touch()"
-                ></v-text-field>
-            </v-col>
-            <v-col lg="6" md="8" sm="12" xs="12" class="ma-0 pa-0">
-                <v-text-field
-                    label="Отчество"
-                    placeholder="Введите Отчество"
-                    outlined
-                    v-model.trim="patronymic"
-                    counter="50"
-                    :error="$v.patronymic.$invalid && $v.patronymic.$error"
-                    @input="$v.patronymic.$touch()"
-                ></v-text-field>
-            </v-col>
+            <v-row cols="12">
+                <v-col lg="4" md="4" sm="6" xs="12">
+                    <v-text-field
+                        label="Фамилия"
+                        placeholder="Введите Фамилию" outlined
+                        v-model.trim="firstName"
+                        counter="50"
+                        :error="$v.firstName.$invalid && $v.firstName.$error"
+                        @input="$v.firstName.$touch()"
+                    ></v-text-field>
+                </v-col>
+                <v-col lg="4" md="4" sm="6" xs="12">
+                    <v-text-field
+                        label="Имя"
+                        placeholder="Введите Имя"
+                        outlined
+                        v-model.trim="secondName"
+                        counter="50"
+                        :error="$v.secondName.$invalid && $v.secondName.$error"
+                        @input="$v.secondName.$touch()"
+                    ></v-text-field>
+                </v-col>
+                <v-col lg="4" md="4" sm="6" xs="12">
+                    <v-text-field
+                        label="Отчество"
+                        placeholder="Введите Отчество"
+                        outlined
+                        v-model.trim="patronymic"
+                        counter="50"
+                        :error="$v.patronymic.$invalid && $v.patronymic.$error"
+                        @input="$v.patronymic.$touch()"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
 
             <v-card>
                 <v-card-title></v-card-title>
@@ -222,6 +224,7 @@ export default {
                 this.firstName = ''
                 this.secondName = ''
                 this.patronymic = ''
+                this.subjects = []
                 this.$v.$reset()
                 this.$emit('answerForm', {save: false, showForm: false})
             } else {
