@@ -114,6 +114,7 @@
                         Пока пусто
                     </template>
                 </v-data-table>
+                <h3 style="text-align: right"> Всего: {{ sumOfPrices }} </h3>
             </v-card>
         </v-card-text>
 
@@ -169,6 +170,7 @@ export default {
         secondName: '',
         patronymic: '',
         subjects: [],
+        sumOfPrices: 0,
 
         editedItem: {
             subject: '',
@@ -190,6 +192,15 @@ export default {
         formTitle() {
             return this.editedIndex === -1 ? 'Добавить' : 'Редактировать'
         },
+        getSumPriceTangibles() {
+            if (this.subjects !== []) {
+                let sum = 0
+                this.subjects.forEach(item => {
+                    sum += Number(item.price)
+                })
+                return sum
+            }
+        },
     },
 
     watch: {
@@ -199,11 +210,15 @@ export default {
         dialogDelete(val) {
             val || this.closeDelete()
         },
+        subjects() {
+            this.sumOfPrices = this.getSumPriceTangibles
+        }
     },
 
     async mounted() {
         if (this.isNewEmployee) {
             this.employee = {}
+            this.subjects = []
         } else {
             let path = location.pathname.split('/')
             const id = path[path.length - 1]

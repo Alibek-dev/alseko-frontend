@@ -1,6 +1,6 @@
 <template>
     <div style="padding: 0 20% 0 20%">
-        <h1>Сотрудник {{ }}</h1>
+        <h1>Сотрудник</h1>
         <v-btn
             @click="$router.push('/')"
         >

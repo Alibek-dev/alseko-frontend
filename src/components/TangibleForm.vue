@@ -21,6 +21,7 @@
                     <v-text-field
                         label="Стоимость"
                         placeholder="Введите стоимость"
+                        type="number"
                         outlined
                         v-model="price"
                         :error="$v.price.$invalid && $v.price.$error"
