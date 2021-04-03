@@ -1,5 +1,5 @@
 import axios from 'axios'
-const URL = process.env.DOMEN ?? 'http://localhost:3000/'
+const URL = process.env.URL ?? 'http://localhost:3000/'
 
 export default  {
     actions: {
@@ -12,6 +12,33 @@ export default  {
                 throw e
             }
         },
+        async createNewEmployee(ctx, employee) {
+            try {
+                let res = await axios.post(URL + 'api/employee', employee)
+
+                if (res.status === 200) {
+                    employee['id'] = res.data.id
+                    res = await axios.post(URL + 'api/employee/tangibles', employee)
+                } else {
+                    console.log('Что-то пошло не так')
+                }
+            } catch (e) {
+                ctx.commit('setError', e)
+            }
+        },
+        async updateEmployee(ctx, employee) {
+            try {
+                let res = await axios.put(URL + 'api/employee', employee)
+                if (res.status === 200) {
+                    employee['id'] = res.data.id
+                    res = await axios.post(URL + 'api/employee/tangibles', employee)
+                } else {
+                    console.log('Что-то пошло не так')
+                }
+            } catch (e) {
+                ctx.commit('setError', e)
+            }
+        }
     },
 
     mutations: {

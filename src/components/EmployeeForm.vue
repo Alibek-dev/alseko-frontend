@@ -1,7 +1,7 @@
 <template>
 
     <v-card>
-        <v-card-title>Добавить сотрудника</v-card-title>
+        <v-card-title>{{ this.isNewEmployee ? 'Добавить нового сотрудника' : 'Редактировать сотрудника' }}</v-card-title>
 
         <v-card-text>
             <v-row cols="12">
@@ -246,16 +246,28 @@ export default {
                 this.$router.push('/')
             }
         },
-        saveAndCloseForm() {
+        async saveAndCloseForm() {
             this.$v.$touch()
             if (this.$v.$invalid) {
                 console.log('Не пройдёшь')
             } else {
                 if (this.isNewEmployee) {
-
+                    await this.$store.dispatch('createNewEmployee', {
+                        firstName: this.firstName,
+                        secondName: this.secondName,
+                        patronymic: this.patronymic,
+                        subjects: this.subjects
+                    })
                     this.$emit('answerForm', {save: true, showForm: false})
                 } else {
-                    this.$router.push('/')
+                    await this.$store.dispatch('updateEmployee', {
+                        employeeId: this.employee.id,
+                        firstName: this.firstName,
+                        secondName: this.secondName,
+                        patronymic: this.patronymic,
+                        subjects: this.subjects
+                    })
+                    await this.$router.push('/')
                 }
             }
 

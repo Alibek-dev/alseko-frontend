@@ -120,10 +120,10 @@ export default {
                 this.$emit('initEmployees')
             }
         },
-        onAnswerForm(data) {
+        async onAnswerForm(data) {
             this.showForm = data.showForm
             if (data.save) {
-                console.log('Сохранить')
+                await this.$emit('initEmployees')
             }
 
         }

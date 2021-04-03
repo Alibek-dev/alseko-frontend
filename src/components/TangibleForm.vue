@@ -72,7 +72,6 @@ export default {
         showTangibleForm() {
             this.subject = this.editedItem.subject
             this.price = this.editedItem.price
-            console.log(this.editedItem)
             this.$v.$reset()
         },
     },
