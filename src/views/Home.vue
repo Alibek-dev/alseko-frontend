@@ -5,6 +5,7 @@
             :employees="employees"
             :loading="loading"
             :headers="headers"
+            @initEmployees="initEmployees"
         />
     </div>
 </template>
@@ -29,10 +30,15 @@ export default {
     }),
 
     async mounted() {
-        this.loading = true
-        await this.$store.dispatch('fetchEmployees')
-        this.employees = this.$store.getters.employees
-        this.loading = false
+        await this.initEmployees()
+    },
+    methods: {
+        async initEmployees() {
+            this.loading = true
+            await this.$store.dispatch('fetchEmployees')
+            this.employees = this.$store.getters.employees
+            this.loading = false
+        }
     }
 }
 </script>

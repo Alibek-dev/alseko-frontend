@@ -11,13 +11,13 @@ export default  {
                 ctx.commit('setError', e)
                 throw e
             }
-        }
+        },
     },
 
     mutations: {
         setEmployees(state, employees) {
             state.employees = employees
-        }
+        },
     },
 
     state: {

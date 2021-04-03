@@ -11,13 +11,22 @@ export default  {
                 ctx.commit('setError', e)
                 throw e
             }
+        },
+        async deleteEmployee(ctx, employeeId) {
+            try {
+                let res = await axios.delete(URL + `api/employee/${employeeId}`)
+                ctx.commit('setEmployee', {})
+            } catch (e) {
+                ctx.commit('setError', e)
+                throw e
+            }
         }
     },
 
     mutations: {
         setEmployee(state, employee) {
             state.employee = employee
-        }
+        },
     },
 
     state: {

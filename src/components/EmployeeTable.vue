@@ -26,7 +26,10 @@
 
         <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
             <v-list>
-                    <v-btn @click="dialog = !dialog" depressed><v-icon>mdi-delete</v-icon> Удалить</v-btn>
+                <v-btn @click="dialog = !dialog" depressed>
+                    <v-icon>mdi-delete</v-icon>
+                    Удалить
+                </v-btn>
             </v-list>
         </v-menu>
 
@@ -55,6 +58,7 @@
 <script>
 import Dialog from './Dialog'
 import EmployeeForm from "./EmployeeForm";
+
 export default {
     name: "Table",
     props: {
@@ -84,17 +88,19 @@ export default {
 
     }),
     methods: {
-        rowClick (item, row) {
+        rowClick(item, row) {
             if (this.selectedId === item.id) {
                 this.selectedId = -1
                 row.select(false)
             } else {
-                this.selectedId=item.id
+                this.selectedId = item.id
                 row.select(true);
             }
         },
-        rowContextMenu (e, item) {
-            document.oncontextmenu = function (){return false}
+        rowContextMenu(e, item) {
+            document.oncontextmenu = function () {
+                return false
+            }
             this.itemContextMenu = item.item
 
             this.showMenu = false;
@@ -107,10 +113,11 @@ export default {
         rowDbClick(e, item) {
             this.$router.push(`/${item.item.id}`)
         },
-        onAnswerDialog(data) {
+        async onAnswerDialog(data) {
             this.dialog = data.dialog
             if (data.deleteObject) {
-                console.log('Удалить')
+                await this.$store.dispatch('deleteEmployee', this.itemContextMenu.id)
+                this.$emit('initEmployees')
             }
         },
         onAnswerForm(data) {
@@ -119,7 +126,7 @@ export default {
                 console.log('Сохранить')
             }
 
-         }
+        }
     },
 }
 </script>
