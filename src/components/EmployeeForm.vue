@@ -1,7 +1,10 @@
 <template>
 
     <v-card>
-        <v-card-title>{{ this.isNewEmployee ? 'Добавить нового сотрудника' : 'Редактировать сотрудника' }}</v-card-title>
+        <v-card-title>{{
+                this.isNewEmployee ? 'Добавить нового сотрудника' : 'Редактировать сотрудника'
+            }}
+        </v-card-title>
 
         <v-card-text>
             <v-row cols="12">
@@ -9,10 +12,10 @@
                     <v-text-field
                         label="Фамилия"
                         placeholder="Введите Фамилию" outlined
-                        v-model.trim="firstName"
+                        v-model.trim="secondName"
                         counter="50"
-                        :error="$v.firstName.$invalid && $v.firstName.$error"
-                        @input="$v.firstName.$touch()"
+                        :error="$v.secondName.$invalid && $v.secondName.$error"
+                        @input="$v.secondName.$touch()"
                     ></v-text-field>
                 </v-col>
                 <v-col lg="4" md="4" sm="6" xs="12">
@@ -20,10 +23,10 @@
                         label="Имя"
                         placeholder="Введите Имя"
                         outlined
-                        v-model.trim="secondName"
+                        v-model.trim="firstName"
                         counter="50"
-                        :error="$v.secondName.$invalid && $v.secondName.$error"
-                        @input="$v.secondName.$touch()"
+                        :error="$v.firstName.$invalid && $v.firstName.$error"
+                        @input="$v.firstName.$touch()"
                     ></v-text-field>
                 </v-col>
                 <v-col lg="4" md="4" sm="6" xs="12">
@@ -135,7 +138,16 @@
                 Сохранить
             </v-btn>
         </v-card-actions>
+
+        <v-snackbar
+            v-model="snackbar.show"
+            :color="snackbar.color"
+            :timeout="2000"
+        >
+            {{ snackbar.text }}
+        </v-snackbar>
     </v-card>
+
 </template>
 
 <script>
@@ -146,14 +158,18 @@ export default {
     name: "EmployeeForm",
     props: {
         isNewEmployee: Boolean,
-
     },
     components: {
-        TangibleForm
+        TangibleForm,
     },
     data: () => ({
         dialog: false,
         dialogDelete: false,
+        snackbar: {
+            show: false,
+            color: '',
+            text: '',
+        },
         headers: [
             {
                 text: 'Название',
@@ -258,7 +274,14 @@ export default {
                         patronymic: this.patronymic,
                         subjects: this.subjects
                     })
-                    this.$emit('answerForm', {save: true, showForm: false})
+
+                    if (!this.isEmployeeExist()) {
+                        this.$emit('answerForm', {save: true, showForm: false})
+                        this.nullifyData()
+                        this.$v.$reset()
+                    }
+
+
                 } else {
                     await this.$store.dispatch('updateEmployee', {
                         employeeId: this.employee.id,
@@ -267,12 +290,34 @@ export default {
                         patronymic: this.patronymic,
                         subjects: this.subjects
                     })
-                    await this.$router.push('/')
+                    if (!this.isEmployeeExist()) {
+                        await this.$router.push('/')
+                    }
+
                 }
             }
 
         },
+        isEmployeeExist() {
+            if ((this.$store.getters.error !== null) && (this.$store.getters.error.status === 409)) {
+                this.snackbar = {
+                    show: true,
+                    color: 'error',
+                    text: this.$store.getters.error.data
+                }
+                this.$store.commit('clearError')
+                return true
+            } else {
+                return false
+            }
+        },
 
+        nullifyData() {
+            this.firstName = ''
+            this.secondName = ''
+            this.patronymic = ''
+            this.subjects = []
+        },
 
         editItem(item) {
             this.editedIndex = this.subjects.indexOf(item)

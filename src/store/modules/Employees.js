@@ -23,7 +23,7 @@ export default  {
                     console.log('Что-то пошло не так')
                 }
             } catch (e) {
-                ctx.commit('setError', e)
+                ctx.commit('setError', e.response)
             }
         },
         async updateEmployee(ctx, employee) {
@@ -36,7 +36,7 @@ export default  {
                     console.log('Что-то пошло не так')
                 }
             } catch (e) {
-                ctx.commit('setError', e)
+                ctx.commit('setError', e.response)
             }
         }
     },

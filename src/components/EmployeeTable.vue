@@ -51,6 +51,13 @@
             />
         </v-dialog>
 
+        <v-snackbar
+            v-model="snackbar.show"
+            :color="snackbar.color"
+            :timeout="2000"
+        >
+            {{ snackbar.text }}
+        </v-snackbar>
 
     </v-card>
 </template>
@@ -78,6 +85,12 @@ export default {
         contextMenuItems: [
             {title: 'Удалить'}
         ],
+
+        snackbar: {
+            show: false,
+            color: '',
+            text: ''
+        },
 
         itemContextMenu: {},
         dialog: false,
@@ -124,8 +137,12 @@ export default {
             this.showForm = data.showForm
             if (data.save) {
                 await this.$emit('initEmployees')
+                this.snackbar = {
+                    show: true,
+                    color: 'success',
+                    text: 'Сотрудник успешно создан'
+                }
             }
-
         }
     },
 }
