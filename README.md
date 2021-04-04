@@ -1,19 +1,18 @@
 # alseko-frontend
 
-## Project setup
+## Настройка проекта
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Компиляция и горячая перезагрузка для проекта
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Компиляция и минификация
 ```
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Проект запускается по адресу http://localhost:8080
